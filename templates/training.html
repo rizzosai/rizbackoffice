@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RizzosAI Training Center</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #e60000 0%, #fff 50%, #001f5b 100%); min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .nav { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: flex; gap: 20px; }
+        .nav a { color: #001f5b; font-weight: bold; text-decoration: none; padding: 8px 16px; border-radius: 8px; transition: background 0.2s; }
+        .nav a.active, .nav a:hover { background: #e60000; color: #fff; }
+        h1 { color: #e60000; margin-bottom: 18px; }
+        .card { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,31,91,0.08); }
+        .guide-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
+        .guide-card { background: #f5f7fa; border-radius: 8px; padding: 18px; border: 1px solid #e60000; }
+        .guide-title { color: #001f5b; font-weight: bold; margin-bottom: 10px; font-size: 1.1em; }
+        .guide-description { color: #666; font-size: 0.9em; margin-bottom: 15px; }
+        .access-button { background: #e60000; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .locked-button { background: #ccc; color: #666; padding: 8px 16px; border: none; border-radius: 5px; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/training" class="active">Training Center</a>
+            <a href="/queue-dashboard">Queue Status</a>
+            <a href="/logout">Logout</a>
+        </div>
+        <h1>🎓 Rizzos AI Training Center</h1>
+        <p>Welcome {{ customer.email }}! Here's everything you need to succeed with Rizzos AI.</p>
+        <div class="card">
+            <h2>📚 Your Guides</h2>
+            <div class="guide-list">
+                {% for guide in guides %}
+                <div class="guide-card">
+                    <div class="guide-title">{{ guide.title }}</div>
+                    <div class="guide-description">{{ guide.description }}</div>
+                    {% if guide.locked %}
+                        <span class="locked-button">Locked</span>
+                    {% else %}
+                        <a href="/guide/{{ guide.id }}" class="access-button">📖 Read Guide</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "1": {"name": "Basic Starter", "price": 29, "guides": 5, "level": 1},
+  "2": {"name": "Starter Tools", "price": 97, "guides": 10, "level": 2},
+  "3": {"name": "Professional", "price": 197, "guides": 15, "level": 3},
+  "4": {"name": "Empire", "price": 497, "guides": 20, "level": 4}
+}

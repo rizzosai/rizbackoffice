@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next 5 Commission Queue</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #e60000 0%, #fff 50%, #001f5b 100%); min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .nav { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: flex; gap: 20px; }
+        .nav a { color: #001f5b; font-weight: bold; text-decoration: none; padding: 8px 16px; border-radius: 8px; transition: background 0.2s; }
+        .nav a.active, .nav a:hover { background: #e60000; color: #fff; }
+        h1 { color: #e60000; margin-bottom: 18px; }
+        .stats { display: flex; gap: 30px; margin-bottom: 20px; }
+        .stat-box { background: #007cba; color: white; padding: 20px; text-align: center; border-radius: 5px; }
+        .card { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,31,91,0.08); }
+        .queue-item, .completed-item { background: #f5f7fa; border-radius: 8px; padding: 12px; border: 1px solid #e60000; margin-bottom: 10px; }
+        .queue-item strong { color: #e60000; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/queue-dashboard" class="active">Queue Status</a>
+            <a href="/logout">Logout</a>
+        </div>
+        <h1>Next 5 Commission Queue</h1>
+        <div class="stats">
+            <div class="stat-box">
+                <h3>{{ queue_data.queue|length }}</h3>
+                <p>In Queue</p>
+            </div>
+            <div class="stat-box">
+                <h3>{{ queue_data.completed|length }}</h3>
+                <p>Completed</p>
+            </div>
+            <div class="stat-box">
+                <h3>{{ queue_data.total_signups_processed }}</h3>
+                <p>Sales Processed</p>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Current Queue (Next 5 to Earn Commissions)</h3>
+            {% if queue_data.queue %}
+                {% for person in queue_data.queue[:5] %}
+                    <div class="queue-item">
+                        <strong>Position {{ person.queue_position }}:</strong> {{ person.email }}
+                        <br><small>Level {{ person.package_level }} • Joined: {{ person.joined_queue[:10] }}</small>
+                    </div>
+                {% endfor %}
+                {% if queue_data.queue|length > 5 %}
+                    <p><strong>{{ queue_data.queue|length - 5 }} more people</strong> waiting after the next 5...</p>
+                {% endif %}
+            {% else %}
+                <p>Queue is empty. First 5 customers to join will be in line for commissions!</p>
+            {% endif %}
+        </div>
+        {% if queue_data.completed %}
+        <div class="card">
+            <h3>Recently Completed (Earned Commissions)</h3>
+            {% for person in queue_data.completed[-10:] %}
+                <div class="completed-item">
+                    {{ person.email }} - Level {{ person.package_level }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

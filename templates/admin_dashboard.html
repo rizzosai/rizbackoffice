@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - RizzosAI Backoffice</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298, #ff3c3c);
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .admin-container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            background: rgba(30, 60, 114, 0.97);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        h2 {
+            color: #ff3c3c;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        th, td {
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid #fff2;
+            text-align: left;
+        }
+        th {
+            background: #2a5298;
+        }
+        .actions form {
+            display: inline;
+        }
+        .flash {
+            color: #ffb347;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .section-title {
+            margin-top: 2rem;
+            color: #fff;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h2>Admin Dashboard</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <h3 class="section-title">Users</h3>
+        <table>
+            <tr><th>Email</th><th>Package</th><th>Referrer</th><th>Actions</th></tr>
+            {% for email, user in customers.items() %}
+            <tr>
+                <td>{{ email }}</td>
+                <td>{{ user.package_level }}</td>
+                <td>{{ user.referrer or '' }}</td>
+                <td class="actions">
+                    {% if email != 'admin@rizzosai.com' %}
+                    <form method="post" action="{{ url_for('remove_user', email=email) }}">
+                        <button type="submit">Remove</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h3 class="section-title">Packages</h3>
+        <table>
+            <tr><th>Level</th><th>Name</th><th>Price</th><th>Guide Count</th><th>Actions</th></tr>
+            {% for level, pkg in packages.items() %}
+            <tr>
+                <td>{{ level }}</td>
+                <td>{{ pkg.name }}</td>
+                <td>${{ pkg.price }}</td>
+                <td>{{ pkg.guide_count }}</td>
+                <td class="actions">
+                    <form method="post" action="{{ url_for('update_package') }}">
+                        <input type="hidden" name="level" value="{{ level }}">
+                        <input type="text" name="name" value="{{ pkg.name }}" required>
+                        <input type="number" name="price" value="{{ pkg.price }}" step="0.01" required>
+                        <input type="number" name="guide_count" value="{{ pkg.guide_count }}" required>
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h3 class="section-title">Queue</h3>
+        <table>
+            <tr><th>Email</th><th>Joined</th><th>Referrer</th><th>Actions</th></tr>
+            {% for person in queue_data.queue %}
+            <tr>
+                <td>{{ person.email }}</td>
+                <td>{{ person.joined }}</td>
+                <td>{{ person.referrer or '' }}</td>
+                <td class="actions">
+                    <form method="post" action="{{ url_for('remove_from_queue', email=person.email) }}">
+                        <button type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h3 class="section-title">Commissions</h3>
+        <table>
+            <tr><th>Email</th><th>Total Earned</th><th>Payments</th><th>Actions</th></tr>
+            {% for email, comm in commissions.items() %}
+            <tr>
+                <td>{{ email }}</td>
+                <td>${{ comm.total_earned }}</td>
+                <td>
+                    {% for p in comm.payments %}
+                        ${{ p.amount }} ({{ p.date }})<br>
+                    {% endfor %}
+                </td>
+                <td class="actions">
+                    <form method="post" action="{{ url_for('reset_commissions', email=email) }}">
+                        <button type="submit">Reset</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a class="back-link" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

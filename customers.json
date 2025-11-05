@@ -1,0 +1,8 @@
+{
+  "admin@rizzosai.com": {
+    "password": "admin123",
+    "package_level": 4,
+    "signup_date": "2025-11-06T00:00:00",
+    "is_admin": true
+  }
+}

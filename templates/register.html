@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - RizzosAI Backoffice</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298, #ff3c3c);
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .register-container {
+            background: rgba(30, 60, 114, 0.95);
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            width: 350px;
+        }
+        .register-container h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #ff3c3c;
+        }
+        .register-container input[type="text"],
+        .register-container input[type="email"],
+        .register-container input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: #fff;
+            color: #222;
+        }
+        .register-container input[type="submit"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: #ff3c3c;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .register-container input[type="submit"]:hover {
+            background: #e32b2b;
+        }
+        .register-container .login-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #fff;
+            text-decoration: underline;
+        }
+        .register-container .flash {
+            color: #ffb347;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>Register</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form method="post">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="text" name="referrer" placeholder="Referrer (optional)">
+            <input type="submit" value="Register">
+        </form>
+        <a class="login-link" href="{{ url_for('login_page') }}">Already have an account? Login</a>
+    </div>
+</body>
+</html>
