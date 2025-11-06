@@ -1,12 +1,21 @@
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import os
 import json
 from datetime import datetime, timedelta
 from functools import wraps
+# Load environment variables from .env
+from dotenv import load_dotenv
+load_dotenv()
+
 
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'replace-this-with-a-secure-key')
+
+# Admin credentials from environment
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'password123')
 
 # File paths
 CUSTOMERS_FILE = 'customers.json'
@@ -66,7 +75,7 @@ def assign_commission(referrer_email, amount):
     save_json(COMMISSIONS_FILE, commissions)
 
 def is_admin():
-    return session.get('customer_email') == 'admin@rizzosai.com'
+    return session.get('customer_email') == ADMIN_USERNAME
 
 def admin_required(f):
     @wraps(f)
@@ -89,19 +98,20 @@ def login_page():
     if request.method == 'POST':
         identifier = request.form['identifier']
         password = request.form['password']
+        # Debug print statements
+        print("ADMIN_USERNAME from env:", ADMIN_USERNAME)
+        print("ADMIN_PASSWORD from env:", ADMIN_PASSWORD)
+        print("identifier from form:", identifier)
+        print("password from form:", password)
         customers = load_json(CUSTOMERS_FILE)
-        # Admin can login with email or username
-        admin_email = 'admin@rizzosai.com'
-        admin = customers.get(admin_email)
-        if admin and (identifier == admin_email or identifier == admin.get('username')) and admin['password'] == password:
-            session['customer_email'] = admin_email
+        # Admin login using ADMIN_USERNAME and ADMIN_PASSWORD from .env
+        if identifier == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session['customer_email'] = ADMIN_USERNAME
             return redirect(url_for('dashboard'))
         # Affiliates must use username only
         user = None
         user_email = None
         for email, data in customers.items():
-            if email == admin_email:
-                continue
             if identifier == data.get('username'):
                 user = data
                 user_email = email
